@@ -1,0 +1,1 @@
+import{j as m}from"./index-DIVevLsc.js";function u({variant:t="primary",size:n="md",className:r="",children:o,...s}){return m.jsx("button",{className:`btn btn--${t} btn--${n} ${r}`,...s,children:o})}export{u as B};
