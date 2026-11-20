@@ -10,7 +10,7 @@ const tours: Tour[] = [
     price: 420,
     duration: 3,
     rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1567600476088-9c5a3d6f8f0d?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
     category: 'Культурний',
   },
   {

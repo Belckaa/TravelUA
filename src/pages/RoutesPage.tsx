@@ -1,51 +1,71 @@
-import { useEffect, useState } from 'react';
-import { Clock, Mountain, Route as RouteIcon } from 'lucide-react';
-import { routeService } from '../services/api';
-import type { Route } from '../types';
-import { Card } from '../components/ui/Card';
+import { Link } from 'react-router-dom';
+import { ArrowRight, MapPin, Star } from 'lucide-react';
+import { travelRoutes } from '../data/routes';
 
 export function RoutesPage() {
-  const [routes, setRoutes] = useState<Route[]>([]);
-
-  useEffect(() => {
-    routeService.getRoutes().then(setRoutes);
-  }, []);
-
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
-      <h1 className="text-4xl font-black">Маршрути</h1>
-      <p className="mt-2 text-slate-600">Плануй піші пригоди та відкривай нові місця.</p>
+    <main className="min-h-screen bg-slate-50">
+      <section className="bg-gradient-to-br from-blue-950 via-blue-800 to-cyan-700 px-4 py-16 text-white">
+        <div className="mx-auto max-w-7xl">
+          <p className="font-bold text-cyan-300">TravelUA Routes</p>
+          <h1 className="mt-2 text-4xl font-black sm:text-5xl">
+            Обирай свій маршрут
+          </h1>
+          <p className="mt-4 max-w-2xl text-blue-100">
+            Клікай на маршрут, переглядай точки та відкривай його на
+            інтерактивній карті.
+          </p>
+        </div>
+      </section>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        {routes.map((route) => (
-          <Card key={route.id} className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
-                <Mountain />
+      <section className="mx-auto max-w-7xl px-4 py-12">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {travelRoutes.map((route) => (
+            <Link
+              key={route.id}
+              to={`/routes/${route.id}`}
+              className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600">
+                  {route.region}
+                </span>
+
+                <span className="flex items-center gap-1 text-sm font-bold text-amber-500">
+                  <Star size={15} fill="currentColor" />
+                  {route.rating}
+                </span>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase">
-                {route.difficulty}
-              </span>
-            </div>
-            <h2 className="mt-5 text-xl font-bold">{route.title}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{route.description}</p>
-            <div className="mt-5 flex gap-5 text-sm font-semibold">
-              <span className="flex items-center gap-1"><RouteIcon size={16} /> {route.distance} км</span>
-              <span className="flex items-center gap-1"><Clock size={16} /> {route.duration} год.</span>
-            </div>
-            <div className="mt-5 space-y-2">
-              {route.points.map((point, index) => (
-                <div key={point} className="flex items-center gap-3 text-sm">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  {point}
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </div>
-    </section>
+
+              <h2 className="mt-5 text-2xl font-black text-slate-900">
+                {route.title}
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-slate-500">
+                {route.description}
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold text-slate-600">
+                <span>🥾 {route.difficulty}</span>
+                <span>⏱ {route.duration}</span>
+                <span>📏 {route.distance}</span>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5 text-blue-600">
+                <span className="flex items-center gap-2 text-sm font-bold">
+                  <MapPin size={17} />
+                  {route.points.length} точки
+                </span>
+
+                <ArrowRight
+                  size={20}
+                  className="transition group-hover:translate-x-1"
+                />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
