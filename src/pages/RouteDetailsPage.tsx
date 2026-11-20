@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { travelRoutes } from '../data/routes';
 import { hotels } from '../data/hotels';
+import { HotelCard } from '../components/hotels/HotelCard';
 import { RouteMap } from '../components/routes/RouteMap';
 import { getWeather, weatherDescription, weatherIcon } from '../services/weather';
 import type { WeatherData } from '../services/weather';
@@ -131,7 +132,7 @@ export function RouteDetailsPage() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <section className="bg-slate-950 px-4 py-12 text-white">
+      <section className="bg-[#26384e] px-4 py-12 text-white">
         <div className="mx-auto max-w-7xl">
           <Link
             to="/routes"
@@ -164,19 +165,19 @@ export function RouteDetailsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-10">
         <div className="mb-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <Clock className="text-blue-600" />
             <p className="mt-3 text-xs text-slate-400">Тривалість</p>
             <p className="font-black text-slate-900">{route.duration}</p>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <Ruler className="text-blue-600" />
             <p className="mt-3 text-xs text-slate-400">Відстань</p>
             <p className="font-black text-slate-900">{route.distance}</p>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <MapPin className="text-blue-600" />
             <p className="mt-3 text-xs text-slate-400">Складність</p>
             <p className="font-black text-slate-900">{route.difficulty}</p>
@@ -185,7 +186,7 @@ export function RouteDetailsPage() {
 
         <RouteMap points={route.points} />
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="rounded-3xl bg-white p-6 shadow-sm">
             <h2 className="text-2xl font-black text-slate-900">
               Точки маршруту
@@ -215,23 +216,23 @@ export function RouteDetailsPage() {
             </div>
           </div>
 
-          <aside className="rounded-3xl bg-blue-600 p-6 text-white shadow-sm">
-            <div className="flex items-center gap-2 text-sm font-bold text-blue-100">
+          <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-sm">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
               <CloudSun size={18} />
               Погода на маршруті
             </div>
 
             {weatherLoading ? (
-              <p className="mt-6 text-blue-100">
+              <p className="mt-6 text-slate-500">
                 Завантаження прогнозу...
               </p>
             ) : weatherError || !weather ? (
-              <p className="mt-6 text-blue-100">
+              <p className="mt-6 text-slate-500">
                 Не вдалося завантажити погоду.
               </p>
             ) : (
               <>
-                <p className="mt-5 text-sm text-blue-100">
+                <p className="mt-5 text-sm text-slate-500">
                   {weather.location.name}
                 </p>
 
@@ -245,23 +246,23 @@ export function RouteDetailsPage() {
                       {Math.round(weather.current.temperature)}°
                     </div>
 
-                    <div className="text-blue-100">
+                    <div className="text-slate-500">
                       {weatherDescription(weather.current.weatherCode)}
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
-                  <div className="rounded-2xl bg-white/10 p-3">
-                    <div className="text-blue-100">Вітер</div>
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <div className="text-slate-500">Вітер</div>
 
                     <div className="mt-1 font-bold">
                       {Math.round(weather.current.windSpeed)} км/год
                     </div>
                   </div>
 
-                  <div className="rounded-2xl bg-white/10 p-3">
-                    <div className="text-blue-100">Опади</div>
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <div className="text-slate-500">Опади</div>
 
                     <div className="mt-1 font-bold">
                       {weather.current.precipitation} мм
@@ -301,43 +302,7 @@ export function RouteDetailsPage() {
           ) : (
             <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {nearbyHotels.map((hotel) => (
-                <div
-                  key={hotel.id}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-                  <img
-                    src={hotel.image}
-                    alt={hotel.name}
-                    className="h-44 w-full object-cover"
-                  />
-
-                  <div className="p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-black text-slate-900">
-                        {hotel.name}
-                      </h3>
-
-                      <span className="font-bold text-amber-500">
-                        ★ {hotel.rating}
-                      </span>
-                    </div>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                      {hotel.city}
-                    </p>
-
-                    <p className="mt-3 text-sm text-slate-600">
-                      {hotel.description}
-                    </p>
-
-                    <Link
-                      to="/hotels"
-                      className="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700"
-                    >
-                      Обрати номер
-                    </Link>
-                  </div>
-                </div>
+                <HotelCard key={hotel.id} hotel={hotel} />
               ))}
             </div>
           )}
