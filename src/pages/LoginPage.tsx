@@ -1,82 +1,67 @@
-﻿import { useState, type FormEvent } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
-import { useAuthStore } from '../store/authStore'
-import { Button } from '../components/Button'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { authService } from '../services/api';
+import { useAppDispatch } from '../hooks/redux';
+import { setUser } from '../store';
 
 export function LoginPage() {
-  const user = useAuthStore((s) => s.user)
-  const { login, register } = useAuthStore()
-  const navigate = useNavigate()
-  const [mode, setMode] = useState<'login' | 'register'>('login')
-  const [email, setEmail] = useState('demo@fintrack.app')
-  const [password, setPassword] = useState('demo1234')
-  const [name, setName] = useState('')
-  const [error, setError] = useState('')
+  const [email, setEmail] = useState('traveler@example.com');
+  const [password, setPassword] = useState('password');
+  const [error, setError] = useState('');
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  if (user) return <Navigate to="/" replace />
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const ok = mode === 'login' ? await login(email, password) : await register(email, password, name)
-    if (ok) navigate('/')
-    else setError('Перевірте введені дані (пароль мінімум 6 символів)')
-  }
+    try {
+      setError('');
+      const user = await authService.login(email, password);
+      dispatch(setUser(user));
+      navigate('/profile');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Помилка авторизації');
+    }
+  };
 
   return (
-    <div className="auth">
-      <div className="auth__card">
-        <div className="auth__brand">
-          <span className="auth__logo">₴</span>
-          <h1>FinTrack</h1>
-        </div>
-        <p className="auth__subtitle">
-          {mode === 'login' ? 'Увійдіть у свій акаунт' : 'Створіть новий акаунт'}
-        </p>
-        <form className="auth__form" onSubmit={handleSubmit}>
-          {mode === 'register' && (
-            <label className="field">
-              <span className="field__label">Ім'я</span>
-              <input
-                className="input"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </label>
-          )}
-          <label className="field">
-            <span className="field__label">Email</span>
+    <section className="flex min-h-[70vh] items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md p-8">
+        <h1 className="text-3xl font-black">Вхід</h1>
+        <p className="mt-2 text-slate-500">Увійди до свого TravelUA акаунта.</p>
+
+        <form onSubmit={submit} className="mt-7 space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-semibold">Email</label>
             <input
-              className="input"
               type="email"
+              required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              onChange={(event) => setEmail(event.target.value)}
+              className="w-full rounded-xl border border-slate-300 px-4 py-3"
             />
-          </label>
-          <label className="field">
-            <span className="field__label">Пароль</span>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold">Пароль</label>
             <input
-              className="input"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="w-full rounded-xl border border-slate-300 px-4 py-3"
             />
-          </label>
-          {error && <div className="alert alert--error">{error}</div>}
+          </div>
+
+          {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+
           <Button type="submit" className="w-full">
-            {mode === 'login' ? 'Увійти' : 'Зареєструватися'}
+            Увійти
           </Button>
         </form>
-        <button
-          className="auth__toggle"
-          onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-        >
-          {mode === 'login' ? 'Немає акаунту? Зареєструватися' : 'Вже маєте акаунт? Увійти'}
-        </button>
-      </div>
-    </div>
-  )
+      </Card>
+    </section>
+  );
 }
